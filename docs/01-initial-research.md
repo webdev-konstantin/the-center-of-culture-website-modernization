@@ -1,5 +1,5 @@
 
-# Day 1 - Initial Research
+# Day 1 —  Initial Research
 
 Date: 2026-06-30
 
