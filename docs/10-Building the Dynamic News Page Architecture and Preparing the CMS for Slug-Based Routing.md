@@ -1,4 +1,4 @@
-# Day 9 — Building the Dynamic News Page Architecture and Preparing the CMS for Slug-Based Routing
+# Day 10 — Building the Dynamic News Page Architecture and Preparing the CMS for Slug-Based Routing
 
 **Date:** 2026-07-25  
 **Status:** Completed
