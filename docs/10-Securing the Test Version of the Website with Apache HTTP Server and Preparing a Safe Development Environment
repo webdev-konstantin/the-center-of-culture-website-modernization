@@ -1,0 +1,370 @@
+
+# Day 10 — Securing the Test Version of the Website and Preparing a Safe Development Environment
+**Date:** 2026-07-27  
+**Status:** Completed
+
+---
+
+# Development Photos
+
+> You may place 3–5 screenshots here:
+>
+> - `.htaccess` configuration;
+> - `.htpasswd` generation;
+> - browser authentication dialog;
+> - adding the `<meta name="robots">` tag;
+> - final project structure.
+>
+> Example:
+>
+> ```text
+> /images/day10/htaccess.png
+> /images/day10/htpasswd.png
+> /images/day10/login-window.png
+> /images/day10/robots-meta.png
+> ```
+
+---
+
+# Objective
+
+Create a secure development environment for the new homepage before its official deployment.
+
+The primary objective was to prevent accidental indexing of the development version by search engines while allowing access only to authorized users.
+
+Planned security architecture:
+
+```text
+Browser
+        ↓
+HTTP Basic Authentication
+        ↓
+.htaccess
+        ↓
+.htpasswd
+        ↓
+Authorized access only
+        ↓
+index.php
+```
+
+---
+
+# Completed Tasks
+
+## 1. Risk Assessment
+
+A review of possible approaches to protect the development version was carried out.
+
+The following methods were evaluated:
+
+- robots.txt
+- Meta Robots
+- X-Robots-Tag
+- Apache password protection
+
+The analysis concluded that HTTP Basic Authentication provides the most reliable protection for a development environment.
+
+---
+
+## 2. Creating the .htaccess File
+
+A dedicated configuration file was created:
+
+```text
+.htaccess
+```
+
+The following features were implemented:
+
+- HTTP Basic Authentication;
+- directory listing disabled;
+- search engine indexing restricted through HTTP headers.
+
+Architecture:
+
+```text
+Apache
+        ↓
+.htaccess
+        ↓
+User authentication
+        ↓
+Access granted
+```
+
+---
+
+## 3. Creating the .htpasswd File
+
+A secure password file was created:
+
+```text
+.htpasswd
+```
+
+Completed actions:
+
+- generation of a bcrypt password hash;
+- administrator credentials configured;
+- secure storage of the password file.
+
+Workflow:
+
+```text
+Username
+        ↓
+Password
+        ↓
+bcrypt
+        ↓
+.htpasswd
+```
+
+---
+
+## 4. Configuring HTTP Basic Authentication
+
+Apache's built-in authentication system was configured.
+
+Verified functionality:
+
+- browser login dialog appears;
+- username and password validation works correctly;
+- unauthorized access is blocked.
+
+Authentication flow:
+
+```text
+Page request
+        ↓
+Apache
+        ↓
+401 Unauthorized
+        ↓
+Login dialog
+        ↓
+.htpasswd verification
+        ↓
+Website access
+```
+
+---
+
+## 5. Verifying bcrypt Compatibility
+
+Apache compatibility with modern password hashing was tested.
+
+Hash format:
+
+```text
+bcrypt ($2y$)
+```
+
+Testing confirmed that the hosting environment successfully supports bcrypt without requiring the legacy APR1 format.
+
+---
+
+## 6. Configuring X-Robots-Tag
+
+The following HTTP response header was added:
+
+```text
+X-Robots-Tag:
+noindex,
+nofollow,
+noarchive,
+nosnippet,
+noimageindex
+```
+
+This instructs search engines not to index the development version.
+
+---
+
+## 7. Adding the Meta Robots Tag
+
+The following tag was inserted into:
+
+```text
+index.php
+```
+
+```html
+<meta name="robots"
+content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+```
+
+This provides an additional HTML-level restriction for search engine crawlers.
+
+---
+
+## 8. Verifying the Security Architecture
+
+The complete protection workflow was tested.
+
+Final architecture:
+
+```text
+Browser
+        ↓
+HTTP Basic Authentication
+        ↓
+.htaccess
+        ↓
+.htpasswd
+        ↓
+index.php
+        ↓
+<meta name="robots">
+        ↓
+Rendered page
+```
+
+---
+
+## 9. Final Testing
+
+The following items were verified:
+
+- authentication dialog;
+- username/password validation;
+- successful page loading after authentication;
+- Meta Robots tag;
+- X-Robots-Tag header.
+
+No issues were detected.
+
+---
+
+# Final Security Architecture
+
+```text
+Internet
+        ↓
+Apache
+        ↓
+.htaccess
+        ↓
+HTTP Basic Authentication
+        ↓
+.htpasswd
+        ↓
+index.php
+        ↓
+<meta name="robots">
+        ↓
+Development Version
+```
+
+---
+
+# Key Technical Achievements
+
+### Secure Development Environment
+
+The development version of the homepage is now accessible only after successful authentication.
+
+---
+
+### Multi-Layer Protection
+
+Several protection mechanisms are used simultaneously:
+
+```text
+HTTP Basic Authentication
+        +
+.htpasswd
+        +
+X-Robots-Tag
+        +
+Meta Robots
+```
+
+---
+
+### Reduced Indexing Risk
+
+Until the official launch, search engines cannot access or index the content of the new homepage.
+
+---
+
+# Technologies Studied
+
+- Apache HTTP Server
+- HTTP Basic Authentication
+- .htaccess
+- .htpasswd
+- bcrypt
+- Meta Robots
+- X-Robots-Tag
+- Technical SEO
+- HTTP Headers
+
+---
+
+# Tools Used
+
+- Visual Studio Code
+- RU-CENTER Hosting
+- Apache
+- Google Chrome
+- Chrome DevTools
+- ChatGPT
+
+---
+
+# Main Result of the Day
+
+A secure development environment for the new homepage has been successfully established.
+
+Confirmed:
+
+- authenticated access only;
+- development version hidden from public visitors;
+- multiple anti-indexing mechanisms implemented;
+- infrastructure prepared for continued development.
+
+---
+
+# Practical Value
+
+This work provided hands-on experience in configuring Apache-based security without relying on third-party software.
+
+Benefits include:
+
+- safe development directly on the production hosting environment;
+- prevention of accidental public exposure;
+- secure testing before deployment;
+- a controlled environment for gradual website modernization.
+
+---
+
+# Next Steps
+
+1. Continue developing the new homepage.
+2. Complete integration with the existing CMS.
+3. Perform final functional testing.
+4. Remove temporary password protection.
+5. Remove all indexing restrictions.
+6. Publish the new homepage.
+
+---
+
+# Conclusion
+
+Day 10 focused on establishing a secure development environment for the website modernization project.
+
+```text
+HTTP Basic Authentication
+        ↓
+Protected Access
+        ↓
+Secure Development
+        ↓
+Production Readiness
+```
+
+As a result, the new homepage is protected from unauthorized access during development and is fully prepared for the next stage of CMS integration and final deployment.
+
+**Status:** Completed
