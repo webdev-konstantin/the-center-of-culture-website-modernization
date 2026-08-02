@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="2151" viewBox="0 0 900 2151">
+<rect width="100%" height="100%" fill="#f4f4f5"/>
+<text x="24" y="40" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#111827">День 17 — решения изнутри / Internal solutions</text>
+<rect x="18" y="70" width="864" height="366" rx="10" fill="#1e1e1e"/>
+<text x="40" y="102" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f9fafb">1. repository-config.php</text>
+<text x="40" y="132" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">$collections = [</text>
+<text x="40" y="155" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">  &#x27;news&#x27; =&gt; [</text>
+<text x="40" y="178" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">    &#x27;content_types&#x27; =&gt; [&#x27;news&#x27;],</text>
+<text x="40" y="201" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">    &#x27;route&#x27; =&gt; &#x27;news&#x27;,</text>
+<text x="40" y="224" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">    &#x27;date_field&#x27; =&gt; &#x27;publication_date&#x27;,</text>
+<text x="40" y="247" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  ],</text>
+<text x="40" y="270" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">  &#x27;events&#x27; =&gt; [</text>
+<text x="40" y="293" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">    &#x27;content_types&#x27; =&gt; [&#x27;event&#x27;,&#x27;international&#x27;],</text>
+<text x="40" y="316" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">    &#x27;route&#x27; =&gt; &#x27;events&#x27;,</text>
+<text x="40" y="339" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">    &#x27;date_field&#x27; =&gt; &#x27;event_start&#x27;,</text>
+<text x="40" y="362" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">    &#x27;fallback_date_field&#x27; =&gt; &#x27;publication_date&#x27;,</text>
+<text x="40" y="385" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  ],</text>
+<text x="40" y="408" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">];</text>
+<rect x="18" y="454" width="864" height="297" rx="10" fill="#1e1e1e"/>
+<text x="40" y="486" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f9fafb">2. repository-query.php</text>
+<text x="40" y="516" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">$dateExpression = $collectionKey === &#x27;events&#x27;</text>
+<text x="40" y="539" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  ? &#x27;COALESCE(event_start, publication_date)&#x27;</text>
+<text x="40" y="562" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  : &#x27;publication_date&#x27;;</text>
+<text x="40" y="585" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="40" y="608" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">$whereParts[] = &#x27;(title LIKE ?</text>
+<text x="40" y="631" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  OR subtitle LIKE ?</text>
+<text x="40" y="654" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  OR tags LIKE ?</text>
+<text x="40" y="677" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  OR event_location LIKE ?)&#x27;;</text>
+<text x="40" y="700" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="40" y="723" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">$sql .= &#x27; LIMIT ? OFFSET ?&#x27;;</text>
+<rect x="18" y="769" width="864" height="251" rx="10" fill="#1e1e1e"/>
+<text x="40" y="801" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f9fafb">3. media.php</text>
+<text x="40" y="831" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">$mediaSections = [</text>
+<text x="40" y="854" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">  [&#x27;class&#x27;=&gt;&#x27;news&#x27;,</text>
+<text x="40" y="877" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">   &#x27;link_url&#x27;=&gt;&quot;/new-home/$locale/news/&quot;],</text>
+<text x="40" y="900" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">  [&#x27;class&#x27;=&gt;&#x27;event&#x27;,</text>
+<text x="40" y="923" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">   &#x27;link_url&#x27;=&gt;&quot;/new-home/$locale/events/?type=event&quot;],</text>
+<text x="40" y="946" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">  [&#x27;class&#x27;=&gt;&#x27;international&#x27;,</text>
+<text x="40" y="969" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#9cdcfe" xml:space="preserve">   &#x27;link_url&#x27;=&gt;&quot;/new-home/$locale/events/?type=international&quot;],</text>
+<text x="40" y="992" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">];</text>
+<rect x="18" y="1038" width="864" height="320" rx="10" fill="#1e1e1e"/>
+<text x="40" y="1070" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f9fafb">4. .htaccess</text>
+<text x="40" y="1100" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#4ec9b0" xml:space="preserve">RewriteRule ^(ru|hu)/media/?$</text>
+<text x="40" y="1123" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  media.php?locale=$1 [L,QSA,NC]</text>
+<text x="40" y="1146" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="40" y="1169" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#4ec9b0" xml:space="preserve">RewriteRule ^(ru|hu)/news/?$</text>
+<text x="40" y="1192" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  repository.php?collection=news&amp;locale=$1 [L,QSA,NC]</text>
+<text x="40" y="1215" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="40" y="1238" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#4ec9b0" xml:space="preserve">RewriteRule ^(ru|hu)/events/?$</text>
+<text x="40" y="1261" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  repository.php?collection=events&amp;locale=$1 [L,QSA,NC]</text>
+<text x="40" y="1284" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="40" y="1307" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#4ec9b0" xml:space="preserve">RewriteRule ^(ru|hu)/news/([a-z0-9-]+)/?$</text>
+<text x="40" y="1330" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  news.php?locale=$1&amp;slug=$2 [L,QSA,NC]</text>
+<rect x="18" y="1376" width="864" height="412" rx="10" fill="#1e1e1e"/>
+<text x="40" y="1408" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f9fafb">5. repository-calendar.js</text>
+<text x="40" y="1438" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">function handleDateSelection(clickedDate) {</text>
+<text x="40" y="1461" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  if (!selectedStart || selectedEnd) {</text>
+<text x="40" y="1484" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">    selectedStart = clickedDate;</text>
+<text x="40" y="1507" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">    selectedEnd = null;</text>
+<text x="40" y="1530" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  } else if (clickedDate &lt; selectedStart) {</text>
+<text x="40" y="1553" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">    selectedStart = clickedDate;</text>
+<text x="40" y="1576" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">    selectedEnd = null;</text>
+<text x="40" y="1599" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  } else {</text>
+<text x="40" y="1622" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">    selectedEnd = clickedDate;</text>
+<text x="40" y="1645" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  }</text>
+<text x="40" y="1668" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  renderCalendar();</text>
+<text x="40" y="1691" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">}</text>
+<text x="40" y="1714" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="40" y="1737" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">inputFrom.value = formatIsoDate(selectedStart);</text>
+<text x="40" y="1760" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">inputTo.value = formatIsoDate(selectedEnd);</text>
+<rect x="18" y="1806" width="864" height="320" rx="10" fill="#1e1e1e"/>
+<text x="40" y="1838" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#f9fafb">6. Progressive enhancement</text>
+<text x="40" y="1868" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">form.classList.add(&#x27;has-enhanced-calendar&#x27;);</text>
+<text x="40" y="1891" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="40" y="1914" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">.repository-filter-form.has-enhanced-calendar</text>
+<text x="40" y="1937" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">.repository-date-row--calendar-sync {</text>
+<text x="40" y="1960" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  display: none;</text>
+<text x="40" y="1983" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">}</text>
+<text x="40" y="2006" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve"></text>
+<text x="40" y="2029" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">.repository-calendar-actions {</text>
+<text x="40" y="2052" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  display: grid;</text>
+<text x="40" y="2075" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">  gap: 10px;</text>
+<text x="40" y="2098" font-family="DejaVu Sans Mono, monospace" font-size="16" fill="#d4d4d4" xml:space="preserve">}</text>
+</svg>
