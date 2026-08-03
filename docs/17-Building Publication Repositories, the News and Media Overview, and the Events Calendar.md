@@ -1,30 +1,30 @@
-# Day 17 — Publication Repositories, the News and Media Page, and the Events Calendar
+# Day 17 — Building Publication Repositories, the News and Media Overview, and the Events Calendar
 
 **Date:** 2026-08-02  
-**Status:** completed  
-**Day rating:** 5/5
+**Status:** Completed  
+**Day Rating:** 5/5
 
 ---
 
 # What Was Done — In Plain Language
 
-Day 17 transformed the dynamic homepage feeds into a complete publication storage, navigation, and search system.
+Day 17 transformed the limited homepage feeds into a complete publication storage, navigation, and search system.
 
-News and announcements were already loaded from `home_feed_items`, but visitors mainly saw the limited homepage carousels. Older records remained in the database, yet there was no convenient public interface for browsing the complete archive.
+News and announcements were already loaded from `home_feed_items`, but visitors mainly interacted with a few carousel cards. Older records remained in the database, while no convenient public interface existed for browsing the full publication history.
 
-The following structure was created:
+The project received:
 
 ```text
-shared “News and Media” overview
+a shared News and Media overview
         ↓
-complete news repository
+a complete news repository
         ↓
-combined RCC announcements and international-events repository
+a combined announcements and international-events repository
         ↓
-search, filters, pagination, and a two-month calendar
+search, filtering, pagination, and a calendar
 ```
 
-The homepage received:
+The homepage received two links:
 
 ```text
 All News and Media →
@@ -39,176 +39,179 @@ Pretty routes were configured:
 /new-home/ru/events/
 ```
 
-An interactive calendar was built for announcements and international events. It supports date-range selection, quick periods, Apply and Reset actions, and synchronization with server-side MySQL filtering.
+A two-month calendar was developed for announcements and international events. It supports range selection, quick periods, apply and reset actions, and synchronization with the existing MySQL filtering.
 
 ---
 
 # Main Objectives
 
-1. Design the archive-page architecture.
-2. Preserve three content types: `news`, `event`, and `international`.
-3. Launch two public repositories: news and events.
-4. Create a universal collection configuration.
-5. Implement safe SQL search, filtering, sorting, and pagination.
-6. Create one shared publication-card template.
-7. Assemble `repository.php`.
-8. Create the `media.php` overview page.
-9. Add the “On This Page” navigator.
-10. Configure pretty URLs through `.htaccess`.
-11. Build a two-month JavaScript calendar.
-12. Connect the calendar to `date_from` and `date_to`.
-13. Refine the calendar into a compact reference-based layout.
-14. Add homepage navigation links.
-15. Verify the complete visitor journey.
+1. Design the archive architecture.
+2. Preserve three logical content types while launching two public repositories.
+3. Create a universal configuration.
+4. Implement safe SQL search, filtering, sorting, and pagination.
+5. Create a shared card template.
+6. Assemble `repository.php`.
+7. Connect MySQL and fix the connection error.
+8. Create `media.php`.
+9. Add a right-side navigator.
+10. Configure pretty URLs.
+11. Build the interactive calendar.
+12. Connect it to `date_from` and `date_to`.
+13. Make the calendar compact.
+14. Connect both user journeys to the homepage.
+
+---
+
+# Initial State
+
+At the beginning of Day 17:
+
+- `home_feed_items` contained news and four announcements;
+- the homepage displayed two dynamic carousels;
+- publications opened through a shared template;
+- older records remained in the database;
+- no public full catalog existed;
+- search and pagination were missing;
+- the News and Media overview did not exist;
+- no events-calendar interface existed.
 
 ---
 
 # 1. Repository Architecture
 
-The database preserves three logical types:
-
-```text
-news          → news
-event         → RCC announcements
-international → international events
-```
-
-The first public stage uses two collections:
+Three editorial types were preserved:
 
 ```text
 news
-→ content_type = 'news'
+event
+international
+```
+
+Two public collections were enabled:
+
+```text
+news
+→ content_type = news
 
 events
 → content_type IN ('event', 'international')
 ```
 
-A standalone `international` collection is already described in configuration but is not yet enabled as a separate public repository.
+The standalone `international` collection is already described in configuration but remains disabled.
 
-```php
-'news' => [
-    'enabled' => true,
-    'content_types' => ['news'],
-    'route' => 'news',
-    'date_field' => 'publication_date',
-    'sort_mode' => 'newest_first'
-],
+## Showcase and Full Catalog
 
-'events' => [
-    'enabled' => true,
-    'content_types' => [
-        'event',
-        'international'
-    ],
-    'route' => 'events',
-    'date_field' => 'event_start',
-    'fallback_date_field' => 'publication_date',
-    'sort_mode' => 'upcoming_then_recent',
-    'show_type_filter' => true
-]
+The homepage remains a showcase:
+
+```text
+LIMIT
+→ several current cards
 ```
 
-The homepage remains a compact showcase, while the repositories become complete catalogs. When a publication leaves a carousel because of `LIMIT`, it remains available in the archive.
+The repository displays the complete stream:
+
+```text
+all published records
+→ search
+→ filters
+→ pagination
+```
+
+A record that leaves the carousel remains available in the repository.
 
 ---
 
-# 2. Repository Files
+# 2. `repository-config.php`
 
-Core components:
+Created:
 
 ```text
-/docs/new-home/repository.php
 /docs/new-home/includes/repository-config.php
-/docs/new-home/includes/repository-query.php
-/docs/new-home/includes/repository-card.php
-/docs/new-home/css/repository.css
 ```
 
-Responsibilities:
+It stores the project path, page size, locales, collections, date rules, sort modes, and type-filter settings.
+
+---
+
+# 3. `repository-query.php`
+
+Created:
+
+```text
+/docs/new-home/includes/repository-query.php
+```
+
+It handles collection and locale validation, search, content-type filters, date ranges, counting, pagination, sorting, and current-page retrieval.
+
+Events use:
+
+```sql
+COALESCE(event_start, publication_date)
+```
+
+Search covers `title`, `subtitle`, `tags`, and `event_location`.
+
+Pagination uses `COUNT(*)`, `LIMIT`, and `OFFSET`.
+
+---
+
+# 4. Shared Card Template
+
+Created:
+
+```text
+/docs/new-home/includes/repository-card.php
+```
+
+One template supports news, RCC announcements, and international events. It displays the image, type label, date or range, title, location, summary, and detailed-page link.
+
+---
+
+# 5. `repository.css`
+
+All styles use the isolated `repository-` prefix.
+
+Grid behavior:
+
+```text
+desktop → 3 cards
+tablet  → 2 cards
+mobile  → 1 card
+```
+
+The file also styles search, filters, empty states, errors, pagination, the overview page, the sticky navigator, and the events calendar.
+
+---
+
+# 6. `repository.php`
+
+The page connects:
 
 ```text
 repository-config.php
-→ collection and locale rules
-
-repository-query.php
-→ SQL, filters, sorting, pagination
-
-repository-card.php
-→ shared news/event/international card
-
-repository.php
-→ page assembly
-
-repository.css
-→ adaptive presentation
+→ MySQL
+→ repository-query.php
+→ repository-card.php
+→ repository.css
 ```
 
----
-
-# 3. SQL Search, Dates, and Pagination
-
-Search covers:
-
-```sql
-title
-subtitle
-tags
-event_location
-```
-
-The prepared condition is:
-
-```sql
-(
-    title LIKE ?
-    OR subtitle LIKE ?
-    OR tags LIKE ?
-    OR event_location LIKE ?
-)
-```
-
-News uses `publication_date`; events use:
-
-```sql
-COALESCE(
-    event_start,
-    publication_date
-)
-```
-
-Pagination runs a separate `COUNT(*)`, calculates the current page and offset, and applies:
-
-```sql
-LIMIT ?
-OFFSET ?
-```
-
----
-
-# 4. Working News Repository
-
-After correcting the MySQL connection parameters, the repository began loading published records from `home_feed_items`.
-
-Verified result:
+Supported parameters:
 
 ```text
-Publications found: 8
+collection
+locale
+q
+type
+date_from
+date_to
+page
 ```
 
-The page includes:
-
-- heading and description;
-- search field;
-- date range;
-- result count;
-- adaptive card grid;
-- pagination once the collection exceeds 12 records.
-
-![Working news repository](images/day-17/01-news-repository.jpg)
+The first launch exposed an incorrect MySQL host. Because the interface rendered correctly, the failure was isolated to the database connection. After reusing the working `new mysqli(...)` configuration, the page loaded eight news records.
 
 ---
 
-# 5. “All News and Media” Homepage Link
+# 7. Homepage Link
 
 The homepage received:
 
@@ -216,56 +219,49 @@ The homepage received:
 All News and Media →
 ```
 
-It opens the shared overview rather than a single archive:
-
-```text
-/new-home/ru/media/
-```
-
-![All News and Media homepage link](images/day-17/02-homepage-news-media-link.jpg)
-
-![News-carousel markup and server-side component connection](images/day-17/07-homepage-carousel-code.jpg)
-
-This keeps the homepage compact, uses the overview page for content discovery, and reserves repositories for search and filtering.
+It opens the shared overview rather than only the news archive.
 
 ---
 
-# 6. Creating `media.php`
+# 8. `media.php`
 
-`media.php` became a navigation hub:
+Created:
+
+```text
+/docs/new-home/media.php
+```
+
+It acts as a navigation hub:
 
 ```text
 News and Media
-        ├── News
-        ├── RCC Announcements
-        └── International Events
+├── News
+├── RCC Announcements
+└── International Events
 ```
 
-Each block loads up to three recent publications.
-
-Routing:
+Links:
 
 ```text
-/news/
-→ complete news repository
+News
+→ /new-home/ru/news/
 
-/events/?type=event
-→ RCC announcements
+RCC Announcements
+→ /new-home/ru/events/?type=event
 
-/events/?type=international
-→ international events
+International Events
+→ /new-home/ru/events/?type=international
 ```
 
-![News and Media overview](images/day-17/03-news-media-overview.jpg)
+---
 
-![News-section routing inside the overview page](images/day-17/09-media-news-routing-code.jpg)
+# 9. Right-Side Navigator
 
-![Announcement and international-event section routing](images/day-17/10-media-events-routing-code.jpg)
-
-A sticky right-side navigator was added:
+The overview includes:
 
 ```text
 On This Page
+
 News
 RCC Announcements
 International Events
@@ -279,69 +275,36 @@ Anchors:
 #media-international
 ```
 
----
-
-# 7. Announcements and International Events
-
-RCC announcements and international events share one repository while retaining separate `content_type` values.
-
-![RCC announcements section](images/day-17/04-announcements-section.jpg)
-
-This gives visitors one calendar now and preserves the option to split the content into independent repositories later without migrating records.
+Desktop uses a sticky right column; narrow screens move the navigator above the content.
 
 ---
 
-# 8. Pretty URLs
+# 10. Pretty URLs
 
-The following rules were added:
-
-```apache
-RewriteRule ^(ru|hu)/media/?$ \
-    media.php?locale=$1 [L,QSA,NC]
-
-RewriteRule ^(ru|hu)/news/?$ \
-    repository.php?collection=news&locale=$1 [L,QSA,NC]
-
-RewriteRule ^(ru|hu)/events/?$ \
-    repository.php?collection=events&locale=$1 [L,QSA,NC]
-
-RewriteRule ^(ru|hu)/news/([a-z0-9-]+)/?$ \
-    news.php?locale=$1&slug=$2 [L,QSA,NC]
-```
-
-![Real pretty-URL rules with server paths removed](images/day-17/08-pretty-url-rules-code.jpg)
-
-Rule order distinguishes:
+Routes were added for:
 
 ```text
+/ru/media/
 /ru/news/
-→ repository
-
-/ru/news/real-slug
-→ detailed publication
+/ru/events/
+/ru/news/<slug>
 ```
+
+The repository rule is placed before the detailed-publication rule, allowing Apache to distinguish the list from a slug page.
+
+Technical URLs remain compatible, while public navigation uses the clean routes.
 
 ---
 
-# 9. Calendar Interface
+# 11. Events Calendar
 
-The enhanced calendar appears only for:
+The calendar is rendered only for:
 
 ```text
 collection = events
 ```
 
-The shell includes:
-
-```text
-title
-selected period
-two months
-navigation arrows
-quick periods
-Apply
-Reset
-```
+It contains two months, navigation arrows, range selection, quick periods, Apply, and Reset.
 
 Quick periods:
 
@@ -352,147 +315,74 @@ Next Week
 Next Month
 ```
 
-Russian and Hungarian labels were added to the shared localization array.
-
 ---
 
-# 10. Creating `repository-calendar.js`
+# 12. `repository-calendar.js`
 
-The script handles:
-
-- calendar-container discovery;
-- duplicate-initialization protection;
-- ISO-date parsing;
-- localized formatting;
-- two-month rendering;
-- 42 cells per month;
-- today highlighting;
-- range start and end selection;
-- intermediate-day highlighting;
-- month navigation;
-- quick periods;
-- synchronization with `date_from` and `date_to`.
-
-```javascript
-function handleDateSelection(clickedDate) {
-    if (!selectedStart || selectedEnd) {
-        selectedStart = clickedDate;
-        selectedEnd = null;
-    } else if (
-        compareDates(clickedDate, selectedStart) < 0
-    ) {
-        selectedStart = clickedDate;
-        selectedEnd = null;
-    } else {
-        selectedEnd = clickedDate;
-    }
-
-    renderCalendar();
-}
-```
-
----
-
-# 11. Working Two-Month Calendar
-
-After JavaScript was connected, the interface displayed:
-
-- two neighboring months;
-- weekday headings and numbers;
-- date-range selection;
-- highlighted start and end dates;
-- synchronized system fields;
-- month navigation.
-
-![Working two-month calendar](images/day-17/05-working-two-month-calendar.jpg)
-
----
-
-# 12. Final Compact Design
-
-The first working version occupied too much vertical space. It was redesigned to match the selected reference more closely.
-
-Final desktop layout:
+Created:
 
 ```text
-‹   first month   second month   ›   Today
-                                       Tomorrow
-                                       Next Week
-                                       Next Month
-
-                                       Apply
-                                       Reset
+/docs/new-home/js/repository-calendar.js
 ```
 
-Reduced elements:
+The script builds two months, renders weekdays and 42 cells, marks today, selects a start and end date, highlights the range, changes months, synchronizes `date_from` and `date_to`, and restores the selected state from the URL.
 
-- internal padding;
-- cell height;
-- month-title size;
-- arrows;
-- right-column width;
-- total block height.
+The JavaScript does not query MySQL directly:
 
-![Final compact calendar](images/day-17/06-final-compact-calendar.jpg)
+```text
+calendar
+→ GET fields
+→ repository-query.php
+→ prepared SQL
+→ filtered cards
+```
 
 ---
 
 # 13. Progressive Enhancement
 
-The original date fields remain in the HTML. After successful initialization, JavaScript adds:
+Native date fields remain in the HTML.
 
-```javascript
-form.classList.add(
-    'has-enhanced-calendar'
-);
+After successful initialization, the form receives:
+
+```text
+has-enhanced-calendar
 ```
 
-Only then does CSS hide the duplicate technical row:
-
-```css
-.repository-filter-form.has-enhanced-calendar
-.repository-date-row--calendar-sync {
-    display: none;
-}
-```
-
-Fallback behavior:
+Only then does CSS hide the duplicate native row.
 
 ```text
 JavaScript works
-→ enhanced calendar is shown
-→ technical fields are hidden
+→ show enhanced calendar
 
 JavaScript fails
-→ standard date fields remain available
+→ native date controls remain available
 ```
 
 ---
 
-# 14. “All Announcements and Events” Link
+# 14. Compact Final Layout
 
-Below the homepage heading for announcements and international events, the following link was added:
+The first working calendar was too tall. The final design reduces spacing, cell height, headings, arrows, and right-column width. Quick periods, Apply, and Reset are grouped in the right column.
 
-```text
-All Announcements and Events →
-```
+---
 
-Destination:
+# 15. Final User Navigation
 
 ```text
-/new-home/ru/events/
+Homepage
+│
+├── All News and Media
+│   └── /ru/media/
+│       ├── /ru/news/
+│       ├── /ru/events/?type=event
+│       └── /ru/events/?type=international
+│
+└── All Announcements and Events
+    └── /ru/events/
 ```
 
-The homepage now supports two complete journeys:
-
-```text
-All News and Media
-→ overview
-→ selected repository
-
-All Announcements and Events
-→ calendar repository
-```
+Repository cards open the existing detailed-publication template.
 
 ---
 
@@ -502,39 +392,38 @@ All Announcements and Events
 
 - both carousels work;
 - both full-catalog links work;
-- existing sections remain intact.
+- existing sections remain stable.
 
-## News and Media Page
+## News and Media
 
-- three semantic sections are displayed;
+- three semantic sections render;
 - the right navigator works;
 - anchor links work;
-- section links open the correct collections.
+- repository links work.
 
 ## News Repository
 
-- MySQL connection works;
-- published records are displayed;
-- search and date filtering work;
-- cards open detailed publications.
+- MySQL works;
+- published news is displayed;
+- search and date controls are prepared;
+- pagination is calculated;
+- cards open detailed pages.
 
 ## Events Repository
 
-- All, RCC Announcements, and International Events filters work;
-- two months are displayed;
+- type filters work;
+- two months render;
 - manual range selection works;
 - quick periods work;
-- Apply submits dates to the server;
-- Reset clears filters.
+- Apply sends dates to the server;
+- Reset clears the filters.
 
 ## Pretty URLs
 
-```text
-/new-home/ru/media/
-/new-home/ru/news/
-/new-home/ru/events/
-/new-home/ru/news/<slug>
-```
+- `/new-home/ru/media/` works;
+- `/new-home/ru/news/` works;
+- `/new-home/ru/events/` works;
+- `/new-home/ru/news/<real-slug>` works.
 
 ---
 
@@ -552,49 +441,50 @@ All Announcements and Events
 /docs/new-home/.htaccess
 ```
 
+Database table:
+
+```text
+home_feed_items
+```
+
 ---
 
 # Architecture after Day 17
 
 ```text
 home_feed_items
-        ├── news
-        ├── event
-        └── international
-                ↓
-        homepage — compact showcase
-                ↓
-        media.php — overview and navigation
-                ↓
-        repository.php
-        ├── collection = news
-        └── collection = events
-                ↓
-        repository-query.php
-        ├── search
-        ├── filters
-        ├── sorting
-        └── pagination
-                ↓
-        repository-card.php
-                ↓
-        news.php — detailed publication
+├── news
+├── event
+└── international
+        ↓
+homepage showcase
+        ↓
+media.php overview
+        ↓
+repository.php
+├── news
+└── events
+        ↓
+repository-query.php
+├── search
+├── filtering
+├── sorting
+└── pagination
+        ↓
+repository-card.php
+        ↓
+news.php
 ```
 
-Calendar chain:
+Calendar flow:
 
 ```text
 repository-calendar.js
-        ↓
-select date_from and date_to
-        ↓
-GET request
-        ↓
-repository-query.php
-        ↓
-MySQL
-        ↓
-filtered cards
+→ date_from / date_to
+→ GET
+→ repository-query.php
+→ MySQL
+→ cards
 ```
 
 ---
@@ -605,43 +495,35 @@ filtered cards
 - reusable components;
 - prepared SQL statements;
 - `COUNT`, `LIMIT`, and `OFFSET`;
+- pagination;
 - multi-field search;
-- type and date-range filtering;
+- type and date filtering;
 - `COALESCE`;
-- dynamic sorting;
 - Apache `mod_rewrite`;
 - anchor and sticky navigation;
-- adaptive CSS Grid;
+- responsive CSS Grid;
+- JavaScript `Intl.DateTimeFormat`;
+- calendar-grid generation;
+- range selection;
 - progressive enhancement;
-- `Intl.DateTimeFormat`;
-- generated calendar grids;
-- JavaScript and HTML-form synchronization;
-- RU/HU localization;
-- MySQL connection debugging.
+- RU/HU preparation.
 
 ---
 
 # Main Achievement
 
-The homepage is no longer the only access point to dynamic publications.
-
-The website now has a complete information architecture:
+The website received a complete information architecture:
 
 ```text
 homepage carousels
-        ↓
-shared overview
-        ↓
-complete repositories
-        ↓
-search and filters
-        ↓
-calendar
-        ↓
-detailed publication
+→ overview page
+→ complete repositories
+→ search and filters
+→ calendar
+→ detailed publication
 ```
 
-Materials pushed out of the homepage carousels by card limits remain automatically available in the complete catalog.
+This is not a temporary archive page. It is a reusable foundation for the future CMS editor and multilingual catalog.
 
 ---
 
@@ -649,38 +531,25 @@ Materials pushed out of the homepage carousels by card limits remain automatical
 
 ## 5 out of 5
 
-Day 17 deserves the maximum rating because one work cycle produced a connected system:
+One working cycle delivered repository architecture, PHP components, search, filters, pagination, the News and Media overview, the right navigator, pretty URLs, an interactive calendar, progressive enhancement, and homepage links without breaking the existing carousels or publication pages.
 
-- repository architecture was designed;
-- reusable PHP components were created;
-- search, filtering, sorting, and pagination were implemented;
-- the complete news catalog was launched;
-- the News and Media overview was created;
-- the navigator was added;
-- pretty URLs were configured;
-- the combined events repository was launched;
-- the two-month calendar was implemented;
-- the calendar was connected to server filtering;
-- the interface was refined into a compact professional layout;
-- both user journeys were connected to the homepage.
-
-For Konstantin, this is an especially strong result: a complex system was assembled in small, testable steps without rewriting already working parts.
+For Konstantin, this is an especially strong result: a complex system was assembled through small, testable steps.
 
 ---
 
 # Next Steps
 
 1. Design the new CMS editor.
-2. Add create, edit, publish, and soft-delete operations.
+2. Add create, edit, publish, unpublish, and soft-delete actions.
 3. Add `content_type` selection.
-4. Connect image upload.
-5. Add automatic slug generation.
+4. Add image upload and replacement.
+5. Automate slug generation and validation.
 6. Connect SEO fields.
 7. Implement linked Russian and Hungarian versions.
-8. Prepare migration of legacy CMS publications.
-9. Test pagination with more than 12 records.
-10. Add calendar markers for dates containing events.
-11. Configure user roles and editor security.
-12. Gradually replace direct phpMyAdmin editing.
+8. Migrate historical records from the legacy CMS.
+9. Test pagination with a larger dataset.
+10. Add tag filtering.
+11. Mark event dates directly in the calendar.
+12. Configure roles and editor security.
 
 **Status:** Day 17 completed.
