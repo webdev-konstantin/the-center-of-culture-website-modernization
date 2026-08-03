@@ -39,7 +39,7 @@ Pretty routes were configured:
 /new-home/ru/events/
 ```
 
-A two-month calendar was developed for announcements and international events. It supports range selection, quick periods, apply and reset actions, and synchronization with the existing MySQL filtering.
+A two-month calendar was developed for announcements and international events. It supports range selection, quick periods, Apply and Reset actions, and synchronization with the existing MySQL filtering.
 
 ---
 
@@ -83,8 +83,8 @@ Three editorial types were preserved:
 
 ```text
 news
-event
-international
+ event
+ international
 ```
 
 Two public collections were enabled:
@@ -151,7 +151,13 @@ COALESCE(event_start, publication_date)
 
 Search covers `title`, `subtitle`, `tags`, and `event_location`.
 
-Pagination uses `COUNT(*)`, `LIMIT`, and `OFFSET`.
+Pagination uses:
+
+```sql
+COUNT(*)
+LIMIT ?
+OFFSET ?
+```
 
 ---
 
@@ -257,6 +263,31 @@ International Events
 → /new-home/ru/events/?type=international
 ```
 
+```php
+$mediaSections = [
+    [
+        'class' => 'news',
+        'link_url' =>
+            $projectBasePath .
+            '/' . $locale . '/news/'
+    ],
+    [
+        'class' => 'event',
+        'link_url' =>
+            $projectBasePath .
+            '/' . $locale .
+            '/events/?type=event'
+    ],
+    [
+        'class' => 'international',
+        'link_url' =>
+            $projectBasePath .
+            '/' . $locale .
+            '/events/?type=international'
+    ]
+];
+```
+
 ![News and Media overview](images/day-17/03-news-media-overview.jpg)
 
 ---
@@ -289,13 +320,20 @@ Desktop uses a sticky right column; narrow screens move the navigator above the 
 
 # 10. Pretty URLs
 
-Routes were added for:
+The routes were added directly in `.htaccess`:
 
-```text
-/ru/media/
-/ru/news/
-/ru/events/
-/ru/news/<slug>
+```apache
+RewriteRule ^(ru|hu)/media/?$ \
+    media.php?locale=$1 [L,QSA,NC]
+
+RewriteRule ^(ru|hu)/news/?$ \
+    repository.php?collection=news&locale=$1 [L,QSA,NC]
+
+RewriteRule ^(ru|hu)/events/?$ \
+    repository.php?collection=events&locale=$1 [L,QSA,NC]
+
+RewriteRule ^(ru|hu)/news/([a-z0-9-]+)/?$ \
+    news.php?locale=$1&slug=$2 [L,QSA,NC]
 ```
 
 The repository rule is placed before the detailed-publication rule, allowing Apache to distinguish the list from a slug page.
@@ -335,6 +373,32 @@ Created:
 
 The script builds two months, renders weekdays and 42 cells, marks today, selects a start and end date, highlights the range, changes months, synchronizes `date_from` and `date_to`, and restores the selected state from the URL.
 
+```javascript
+function handleDateSelection(
+    clickedDate
+) {
+    if (
+        !selectedStart ||
+        selectedEnd
+    ) {
+        selectedStart = clickedDate;
+        selectedEnd = null;
+    } else if (
+        compareDates(
+            clickedDate,
+            selectedStart
+        ) < 0
+    ) {
+        selectedStart = clickedDate;
+        selectedEnd = null;
+    } else {
+        selectedEnd = clickedDate;
+    }
+
+    renderCalendar();
+}
+```
+
 The JavaScript does not query MySQL directly:
 
 ```text
@@ -353,11 +417,20 @@ Native date fields remain in the HTML.
 
 After successful initialization, the form receives:
 
-```text
-has-enhanced-calendar
+```javascript
+form.classList.add(
+    'has-enhanced-calendar'
+);
 ```
 
-Only then does CSS hide the duplicate native row.
+Only then does CSS hide the duplicate native row:
+
+```css
+.repository-filter-form.has-enhanced-calendar
+.repository-date-row--calendar-sync {
+    display: none;
+}
+```
 
 ```text
 JavaScript works
