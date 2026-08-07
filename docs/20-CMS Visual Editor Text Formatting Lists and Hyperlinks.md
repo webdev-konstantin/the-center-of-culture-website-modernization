@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-07  
 **Status:** completed  
-**Day rating:** 5/5
+**Day rating:** 4/5
 
 ---
 
@@ -536,22 +536,36 @@ An editor can now prepare content with headings, lists and hyperlinks without di
 
 # Day rating
 
-## 5 out of 5
+## 4 out of 5
 
-Day 20 deserves the highest rating because the complete main-content workflow was finished:
+Day 20 received a rating of **4/5**.
 
-- a visual interface was created;
-- compatibility with `full_text` was preserved;
-- the main formatting commands were connected;
-- both list types were implemented;
-- hyperlinks were added and verified;
-- URL validation was introduced;
-- the result is stored in MySQL;
-- the public page renders the saved HTML correctly;
-- a working JavaScript version was preserved as a backup.
+The main objective was achieved:
 
-This was not a cosmetic improvement. It was the transition from a technical form to an editor suitable for everyday work.
+- the CMS visual editor works;
+- main-content formatting is preserved;
+- bulleted and numbered lists are supported;
+- hyperlinks can be added and removed;
+- HTML is synchronised with the `full_text` field;
+- the published content renders correctly on the website.
 
+However, the highest rating would not be objective. Hyperlink integration required several repeated corrections, intermediate versions were declared complete too early, and the final working logic was reached only after prolonged manual verification.
+
+The result of the day:
+
+```text
+working result achieved
+        +
+core functions verified
+        −
+prolonged debugging
+        −
+repeated errors
+        −
+no automated test
+```
+
+The fair rating is therefore **4 out of 5**: the functionality was completed, but the implementation process needs to become more systematic and verifiable.
 ---
 
 # Next steps
