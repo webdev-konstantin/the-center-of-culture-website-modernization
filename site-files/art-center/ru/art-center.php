@@ -392,16 +392,6 @@ $shareLabels = [
             object-position: center 34%;
         }
 
-        .art-center-official-note {
-            margin-top: 38px;
-            padding: 18px 20px;
-            border: 1px solid #b2ccff;
-            border-radius: 14px;
-            background: #eff6ff;
-            color: #344054;
-            line-height: 1.65;
-        }
-
         .art-center-sidebar__block +
         .art-center-sidebar__block {
             margin-top: 28px;
@@ -781,14 +771,6 @@ require_once __DIR__ .
                     </div>
 
                 </section>
-
-                <p class="art-center-official-note">
-                    <a
-                        href="<?= $escape($officialPageUrl) ?>"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >Более подробная информация на официальном сайте РКЦ в Будапеште</a>.
-                </p>
 
             </article>
 
