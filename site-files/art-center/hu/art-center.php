@@ -57,13 +57,13 @@ $mainImage = [
 $galleryImages = [
     [
         'src' =>
-            '/new-home/img/art-center-modern-dance-rehearsal.jpg',
+            '/new-home/img/art-center-victory-day-theatre-performance-budapest.jpg',
         'alt' =>
-            'Az „ART Center” résztvevői modern koreográfiai gyakorlatokat végeznek',
+            'Az „ART Center” résztvevői páros táncot adnak elő a győzelem napi színházi műsorban a budapesti Orosz Kulturális Központban',
         'caption' =>
-            'Modern koreográfiai próba',
-        'width' => 1080,
-        'height' => 608,
+            'Az „ART Center” színházi előadása a győzelem napja alkalmából',
+        'width' => 2048,
+        'height' => 1154,
     ],
     [
         'src' =>
