@@ -15,7 +15,7 @@ $pageDescription =
     'Kreatív foglalkozások gyermekeknek és fiataloknak: modern tánc, akrobatika, színpadi mozgás, színjátszás és zenés előadások.';
 
 $pageLead =
-    'Tánc, színpadi mozgás, színjátszás és közös alkotás gyermekeknek és fiataloknak Budapesten.';
+    'Az „ART Center” Gyermekművészeti Központ határtalan alkotói tér gyermekek és fiatalok számára, ahol mindenki igazi színpadi előadóként bontakoztathatja ki tehetségét.';
 
 $currentLocale =
     'hu';
@@ -86,6 +86,8 @@ $galleryImages = [
         'height' => 608,
     ],
 ];
+
+$slides = array_merge([$mainImage], $galleryImages);
 
 $escape = static function (string $value): string {
     return htmlspecialchars(
@@ -260,23 +262,6 @@ $shareLabels = [
             text-decoration-thickness: 2px;
         }
 
-        .art-center-intro {
-            margin: 0 0 30px;
-            padding: 22px 24px;
-            border: 1px solid #b2ccff;
-            border-left: 5px solid #175cd3;
-            border-radius: 16px;
-            background:
-                linear-gradient(
-                    135deg,
-                    #eff6ff 0%,
-                    #f8fbff 100%
-                );
-            color: #1849a9;
-            font-size: 18px;
-            line-height: 1.7;
-        }
-
         .art-center-section {
             scroll-margin-top: 28px;
             margin-top: 38px;
@@ -334,13 +319,15 @@ $shareLabels = [
             font-weight: 700;
         }
 
-        .art-center-main-figure {
-            margin: 30px 0 38px;
+
+        .art-center-slider {
+            scroll-margin-top: 28px;
+            margin: 0 0 42px;
         }
 
-        .art-center-main-frame {
+        .art-center-slider__viewport {
+            position: relative;
             overflow: hidden;
-            aspect-ratio: 16 / 9;
             border: 1px solid #e4e7ec;
             border-radius: 22px;
             background: #eef2f7;
@@ -348,48 +335,152 @@ $shareLabels = [
                 0 18px 44px rgba(16, 24, 40, 0.12);
         }
 
-        .art-center-main-image,
-        .art-center-gallery__image {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .art-center-slider__track {
+            display: flex;
+            margin: 0;
+            padding: 0;
+            transform: translate3d(0, 0, 0);
+            transition: transform 420ms ease;
+            cursor: grab;
+            touch-action: pan-y;
+            user-select: none;
+            will-change: transform;
         }
 
-        .art-center-caption {
-            margin: 12px 0 0;
-            color: #667085;
-            font-size: 14px;
-            line-height: 1.5;
-            font-weight: 400;
-            text-align: center;
+        .art-center-slider__track.is-dragging {
+            transition: none;
+            cursor: grabbing;
         }
 
-        .art-center-gallery {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 14px;
-            margin: 20px 0 0;
-        }
-
-        .art-center-gallery__item {
+        .art-center-slider__slide {
+            position: relative;
+            flex: 0 0 100%;
             min-width: 0;
             margin: 0;
         }
 
-        .art-center-gallery__frame {
+        .art-center-slider__frame {
             overflow: hidden;
-            aspect-ratio: 16 / 10;
-            border: 1px solid #e4e7ec;
-            border-radius: 16px;
+            aspect-ratio: 16 / 9;
             background: #eef2f7;
-            box-shadow:
-                0 10px 28px rgba(16, 24, 40, 0.08);
         }
 
-        .art-center-gallery__item:nth-child(2)
-        .art-center-gallery__image {
-            object-position: center 34%;
+        .art-center-slider__image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .art-center-slider__caption {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: 0;
+            padding: 52px 76px 20px 22px;
+            color: #ffffff;
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(16, 24, 40, 0) 0%,
+                    rgba(16, 24, 40, 0.78) 100%
+                );
+            font-size: 14px;
+            line-height: 1.45;
+            font-weight: 500;
+        }
+
+        .art-center-slider__arrow {
+            position: absolute;
+            z-index: 3;
+            top: 50%;
+            display: none;
+            width: 46px;
+            height: 46px;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border: 1px solid rgba(255, 255, 255, 0.72);
+            border-radius: 50%;
+            color: #223b82;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 8px 24px rgba(16, 24, 40, 0.20);
+            font: 700 31px/1 Arial, Helvetica, sans-serif;
+            cursor: pointer;
+            transform: translateY(-50%);
+            transition:
+                background-color 180ms ease,
+                transform 180ms ease;
+        }
+
+        .art-center-slider.is-ready
+        .art-center-slider__arrow {
+            display: flex;
+        }
+
+        .art-center-slider__arrow:hover,
+        .art-center-slider__arrow:focus-visible {
+            background: #ffffff;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .art-center-slider__arrow--previous {
+            left: 16px;
+        }
+
+        .art-center-slider__arrow--next {
+            right: 16px;
+        }
+
+        .art-center-slider__navigation {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-top: 15px;
+        }
+
+        .art-center-slider.is-ready
+        .art-center-slider__navigation {
+            display: flex;
+        }
+
+        .art-center-slider__dots {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .art-center-slider__dot {
+            width: 11px;
+            height: 11px;
+            padding: 0;
+            border: 1px solid #98a2b3;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            transition:
+                width 180ms ease,
+                border-radius 180ms ease,
+                background-color 180ms ease;
+        }
+
+        .art-center-slider__dot[aria-current="true"] {
+            width: 30px;
+            border-color: #223b82;
+            border-radius: 999px;
+            background: #223b82;
+        }
+
+        .art-center-slider__counter {
+            margin: 0;
+            color: #667085;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
         }
 
         .art-center-sidebar__block +
@@ -526,23 +617,63 @@ $shareLabels = [
             outline-offset: 3px;
         }
 
-        @media (max-width: 850px) {
-            .art-center-gallery {
-                grid-template-columns: 1fr;
-            }
-
-            .art-center-gallery__frame {
-                aspect-ratio: 16 / 9;
-            }
-        }
 
         @media (max-width: 760px) {
             .art-center-directions {
                 grid-template-columns: 1fr;
             }
 
-            .art-center-intro {
-                padding: 18px;
+            .art-center-slider {
+                margin-bottom: 36px;
+            }
+
+            .art-center-slider__viewport {
+                overflow: visible;
+                border: 0;
+                border-radius: 0;
+                background: transparent;
+                box-shadow: none;
+            }
+
+            .art-center-slider__track,
+            .art-center-slider__track.is-dragging {
+                display: grid;
+                gap: 22px;
+                transform: none !important;
+                transition: none;
+                cursor: default;
+                touch-action: auto;
+            }
+
+            .art-center-slider__slide {
+                position: static;
+                display: block;
+            }
+
+            .art-center-slider__frame {
+                overflow: hidden;
+                border: 1px solid #e4e7ec;
+                border-radius: 16px;
+                box-shadow:
+                    0 10px 28px rgba(16, 24, 40, 0.08);
+            }
+
+            .art-center-slider__caption {
+                position: static;
+                margin: 10px 0 0;
+                padding: 0 6px;
+                color: #667085;
+                background: transparent;
+                font-size: 14px;
+                font-weight: 400;
+                text-align: center;
+            }
+
+            .art-center-slider.is-ready
+            .art-center-slider__arrow,
+            .art-center-slider.is-ready
+            .art-center-slider__navigation {
+                display: none;
             }
         }
 
@@ -566,14 +697,6 @@ $shareLabels = [
                 width: 100%;
                 padding: 15px 18px;
                 font-size: 27px;
-            }
-
-            .art-center-intro {
-                font-size: 17px;
-            }
-
-            .art-center-main-frame {
-                border-radius: 16px;
             }
         }
 
@@ -601,9 +724,14 @@ $shareLabels = [
                 grid-template-columns: 1fr 1fr;
             }
 
-            .art-center-main-frame,
-            .art-center-gallery__frame {
+            .art-center-slider__viewport,
+            .art-center-slider__frame {
                 box-shadow: none;
+            }
+
+            .art-center-slider__arrow,
+            .art-center-slider__navigation {
+                display: none !important;
             }
         }
 
@@ -638,7 +766,7 @@ require_once __DIR__ .
 
             </div>
 
-            <p class="standard-page__lead">
+            <p class="standard-page__lead" id="about">
                 <?= $escape($pageLead) ?>
             </p>
 
@@ -650,32 +778,100 @@ require_once __DIR__ .
                 class="standard-page__content art-center-page__content"
             >
 
-                <p class="art-center-intro" id="about">
-                    Az „ART Center” Gyermekművészeti Központ
-                    határtalan alkotói tér gyermekek és fiatalok
-                    számára, ahol mindenki igazi színpadi előadóként
-                    bontakoztathatja ki tehetségét.
-                </p>
 
-                <figure class="art-center-main-figure">
+                <section
+                    class="art-center-slider"
+                    id="gallery"
+                    aria-label="Az „ART Center” fényképei"
+                    aria-roledescription="képgaléria"
+                    tabindex="0"
+                    data-art-slider
+                >
 
-                    <div class="art-center-main-frame">
-                        <img
-                            class="art-center-main-image"
-                            src="<?= $escape($mainImage['src']) ?>"
-                            alt="<?= $escape($mainImage['alt']) ?>"
-                            width="<?= (int) $mainImage['width'] ?>"
-                            height="<?= (int) $mainImage['height'] ?>"
-                            loading="eager"
-                            decoding="async"
+                    <div class="art-center-slider__viewport">
+
+                        <div
+                            class="art-center-slider__track"
+                            data-art-slider-track
                         >
+
+                            <?php foreach ($slides as $index => $image): ?>
+
+                                <figure
+                                    class="art-center-slider__slide"
+                                    data-art-slider-slide
+                                    aria-label="<?= ($index + 1) . ' / ' . count($slides) ?>"
+                                >
+
+                                    <div class="art-center-slider__frame">
+                                        <img
+                                            class="art-center-slider__image"
+                                            src="<?= $escape($image['src']) ?>"
+                                            alt="<?= $escape($image['alt']) ?>"
+                                            width="<?= (int) $image['width'] ?>"
+                                            height="<?= (int) $image['height'] ?>"
+                                            loading="<?= $index === 0 ? 'eager' : 'lazy' ?>"
+                                            decoding="async"
+                                            draggable="false"
+                                        >
+                                    </div>
+
+                                    <figcaption
+                                        class="art-center-slider__caption"
+                                    >
+                                        <?= $escape($image['caption']) ?>
+                                    </figcaption>
+
+                                </figure>
+
+                            <?php endforeach; ?>
+
+                        </div>
+
+                        <button
+                            class="art-center-slider__arrow art-center-slider__arrow--previous"
+                            type="button"
+                            aria-label="Előző fénykép"
+                            data-art-slider-previous
+                        >&#8249;</button>
+
+                        <button
+                            class="art-center-slider__arrow art-center-slider__arrow--next"
+                            type="button"
+                            aria-label="Következő fénykép"
+                            data-art-slider-next
+                        >&#8250;</button>
+
                     </div>
 
-                    <figcaption class="art-center-caption">
-                        <?= $escape($mainImage['caption']) ?>
-                    </figcaption>
+                    <div class="art-center-slider__navigation">
 
-                </figure>
+                        <div
+                            class="art-center-slider__dots"
+                            aria-label="Fénykép kiválasztása"
+                        >
+                            <?php foreach ($slides as $index => $image): ?>
+                                <button
+                                    class="art-center-slider__dot"
+                                    type="button"
+                                    aria-label="<?= $index + 1 ?>. fénykép megjelenítése"
+                                    aria-current="<?= $index === 0 ? 'true' : 'false' ?>"
+                                    data-art-slider-dot="<?= $index ?>"
+                                ></button>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <p
+                            class="art-center-slider__counter"
+                            aria-live="polite"
+                            data-art-slider-counter
+                        >
+                            1 / <?= count($slides) ?>
+                        </p>
+
+                    </div>
+
+                </section>
 
                 <section
                     class="art-center-section"
@@ -733,43 +929,6 @@ require_once __DIR__ .
                         előadásokat, valamint zenés színpadi
                         produkciókat hozunk létre.
                     </p>
-
-                </section>
-
-                <section
-                    class="art-center-section"
-                    id="gallery"
-                >
-
-                    <h2>Az „ART Center” galériája</h2>
-
-                    <div class="art-center-gallery">
-
-                        <?php foreach ($galleryImages as $image): ?>
-
-                            <figure class="art-center-gallery__item">
-
-                                <div class="art-center-gallery__frame">
-                                    <img
-                                        class="art-center-gallery__image"
-                                        src="<?= $escape($image['src']) ?>"
-                                        alt="<?= $escape($image['alt']) ?>"
-                                        width="<?= (int) $image['width'] ?>"
-                                        height="<?= (int) $image['height'] ?>"
-                                        loading="lazy"
-                                        decoding="async"
-                                    >
-                                </div>
-
-                                <figcaption class="art-center-caption">
-                                    <?= $escape($image['caption']) ?>
-                                </figcaption>
-
-                            </figure>
-
-                        <?php endforeach; ?>
-
-                    </div>
 
                 </section>
 
@@ -953,6 +1112,202 @@ require_once __DIR__ .
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+
+    const artSlider = document.querySelector('[data-art-slider]');
+
+    if (artSlider) {
+        const sliderTrack =
+            artSlider.querySelector('[data-art-slider-track]');
+        const sliderSlides = Array.from(
+            artSlider.querySelectorAll('[data-art-slider-slide]')
+        );
+        const sliderDots = Array.from(
+            artSlider.querySelectorAll('[data-art-slider-dot]')
+        );
+        const previousButton =
+            artSlider.querySelector('[data-art-slider-previous]');
+        const nextButton =
+            artSlider.querySelector('[data-art-slider-next]');
+        const sliderCounter =
+            artSlider.querySelector('[data-art-slider-counter]');
+        const desktopSlider =
+            window.matchMedia('(min-width: 761px)');
+
+        let currentSlide = 0;
+        let dragStartX = 0;
+        let dragDistance = 0;
+        let isDragging = false;
+
+        const renderSlider = function () {
+            const desktopMode = desktopSlider.matches;
+
+            if (desktopMode) {
+                sliderTrack.style.transform =
+                    'translate3d(-' +
+                    (currentSlide * 100) +
+                    '%, 0, 0)';
+            } else {
+                sliderTrack.style.transform = '';
+            }
+
+            sliderSlides.forEach(function (slide, index) {
+                slide.setAttribute(
+                    'aria-hidden',
+                    desktopMode && index !== currentSlide
+                        ? 'true'
+                        : 'false'
+                );
+            });
+
+            sliderDots.forEach(function (dot, index) {
+                dot.setAttribute(
+                    'aria-current',
+                    index === currentSlide ? 'true' : 'false'
+                );
+            });
+
+            if (sliderCounter) {
+                sliderCounter.textContent =
+                    (currentSlide + 1) +
+                    ' / ' +
+                    sliderSlides.length;
+            }
+        };
+
+        const showSlide = function (index) {
+            if (!desktopSlider.matches || sliderSlides.length < 2) {
+                return;
+            }
+
+            currentSlide =
+                (index + sliderSlides.length) %
+                sliderSlides.length;
+
+            sliderTrack.style.transition = '';
+            renderSlider();
+        };
+
+        if (sliderSlides.length > 1) {
+            artSlider.classList.add('is-ready');
+
+            previousButton.addEventListener('click', function () {
+                showSlide(currentSlide - 1);
+            });
+
+            nextButton.addEventListener('click', function () {
+                showSlide(currentSlide + 1);
+            });
+
+            sliderDots.forEach(function (dot) {
+                dot.addEventListener('click', function () {
+                    showSlide(Number(dot.dataset.artSliderDot));
+                });
+            });
+
+            artSlider.addEventListener('keydown', function (event) {
+                if (!desktopSlider.matches) {
+                    return;
+                }
+
+                if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    showSlide(currentSlide - 1);
+                }
+
+                if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    showSlide(currentSlide + 1);
+                }
+            });
+
+            sliderTrack.addEventListener('pointerdown', function (event) {
+                if (
+                    !desktopSlider.matches ||
+                    event.button !== 0
+                ) {
+                    return;
+                }
+
+                isDragging = true;
+                dragStartX = event.clientX;
+                dragDistance = 0;
+                sliderTrack.classList.add('is-dragging');
+                sliderTrack.setPointerCapture(event.pointerId);
+            });
+
+            sliderTrack.addEventListener('pointermove', function (event) {
+                if (!isDragging || !desktopSlider.matches) {
+                    return;
+                }
+
+                dragDistance = event.clientX - dragStartX;
+
+                sliderTrack.style.transform =
+                    'translate3d(calc(-' +
+                    (currentSlide * 100) +
+                    '% + ' +
+                    dragDistance +
+                    'px), 0, 0)';
+            });
+
+            const finishDragging = function (event) {
+                if (!isDragging) {
+                    return;
+                }
+
+                isDragging = false;
+                sliderTrack.classList.remove('is-dragging');
+
+                if (
+                    sliderTrack.hasPointerCapture &&
+                    sliderTrack.hasPointerCapture(event.pointerId)
+                ) {
+                    sliderTrack.releasePointerCapture(event.pointerId);
+                }
+
+                const threshold = Math.min(
+                    90,
+                    sliderTrack.clientWidth * 0.14
+                );
+
+                if (dragDistance <= -threshold) {
+                    showSlide(currentSlide + 1);
+                } else if (dragDistance >= threshold) {
+                    showSlide(currentSlide - 1);
+                } else {
+                    sliderTrack.style.transition = '';
+                    renderSlider();
+                }
+
+                dragDistance = 0;
+            };
+
+            sliderTrack.addEventListener(
+                'pointerup',
+                finishDragging
+            );
+            sliderTrack.addEventListener(
+                'pointercancel',
+                finishDragging
+            );
+
+            sliderTrack.addEventListener('dragstart', function (event) {
+                event.preventDefault();
+            });
+        }
+
+        if (desktopSlider.addEventListener) {
+            desktopSlider.addEventListener(
+                'change',
+                renderSlider
+            );
+        } else {
+            desktopSlider.addListener(renderSlider);
+        }
+
+        renderSlider();
+    }
+
     const panel = document.querySelector('.art-center-share-panel');
 
     if (!panel) {
