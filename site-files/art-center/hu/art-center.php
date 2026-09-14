@@ -320,41 +320,25 @@ $shareLabels = [
         }
 
 
+
         .art-center-slider {
             scroll-margin-top: 28px;
             margin: 0 0 42px;
         }
 
         .art-center-slider__viewport {
+            overflow: visible;
             position: relative;
-            overflow: hidden;
-            border: 1px solid #e4e7ec;
-            border-radius: 22px;
-            background: #eef2f7;
-            box-shadow:
-                0 18px 44px rgba(16, 24, 40, 0.12);
+            border-radius: 18px;
         }
 
+        /* Without JavaScript, all photos remain visible. */
         .art-center-slider__track {
-            display: flex;
-            margin: 0;
-            padding: 0;
-            transform: translate3d(0, 0, 0);
-            transition: transform 420ms ease;
-            cursor: grab;
-            touch-action: pan-y;
-            user-select: none;
-            will-change: transform;
-        }
-
-        .art-center-slider__track.is-dragging {
-            transition: none;
-            cursor: grabbing;
+            display: grid;
+            gap: 22px;
         }
 
         .art-center-slider__slide {
-            position: relative;
-            flex: 0 0 100%;
             min-width: 0;
             margin: 0;
         }
@@ -362,6 +346,7 @@ $shareLabels = [
         .art-center-slider__frame {
             overflow: hidden;
             aspect-ratio: 16 / 9;
+            border-radius: 18px;
             background: #eef2f7;
         }
 
@@ -369,118 +354,157 @@ $shareLabels = [
             display: block;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            max-width: 100%;
+            object-fit: contain;
             pointer-events: none;
         }
 
         .art-center-slider__caption {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            margin: 0;
-            padding: 52px 76px 20px 22px;
-            color: #ffffff;
-            background:
-                linear-gradient(
-                    180deg,
-                    rgba(16, 24, 40, 0) 0%,
-                    rgba(16, 24, 40, 0.78) 100%
-                );
-            font-size: 14px;
-            line-height: 1.45;
-            font-weight: 500;
-        }
-
-        .art-center-slider__arrow {
-            position: absolute;
-            z-index: 3;
-            top: 50%;
-            display: none;
-            width: 46px;
-            height: 46px;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            border: 1px solid rgba(255, 255, 255, 0.72);
-            border-radius: 50%;
-            color: #223b82;
-            background: rgba(255, 255, 255, 0.92);
-            box-shadow: 0 8px 24px rgba(16, 24, 40, 0.20);
-            font: 700 31px/1 Arial, Helvetica, sans-serif;
-            cursor: pointer;
-            transform: translateY(-50%);
-            transition:
-                background-color 180ms ease,
-                transform 180ms ease;
-        }
-
-        .art-center-slider.is-ready
-        .art-center-slider__arrow {
-            display: flex;
-        }
-
-        .art-center-slider__arrow:hover,
-        .art-center-slider__arrow:focus-visible {
-            background: #ffffff;
-            transform: translateY(-50%) scale(1.05);
-        }
-
-        .art-center-slider__arrow--previous {
-            left: 16px;
-        }
-
-        .art-center-slider__arrow--next {
-            right: 16px;
-        }
-
-        .art-center-slider__navigation {
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            gap: 18px;
-            margin-top: 15px;
-        }
-
-        .art-center-slider.is-ready
-        .art-center-slider__navigation {
-            display: flex;
-        }
-
-        .art-center-slider__dots {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .art-center-slider__dot {
-            width: 11px;
-            height: 11px;
-            padding: 0;
-            border: 1px solid #98a2b3;
-            border-radius: 50%;
-            background: #ffffff;
-            cursor: pointer;
-            transition:
-                width 180ms ease,
-                border-radius 180ms ease,
-                background-color 180ms ease;
-        }
-
-        .art-center-slider__dot[aria-current="true"] {
-            width: 30px;
-            border-color: #223b82;
-            border-radius: 999px;
-            background: #223b82;
-        }
-
-        .art-center-slider__counter {
-            margin: 0;
+            margin: 10px 0 0;
+            padding: 0 6px;
             color: #667085;
-            font-size: 13px;
-            font-weight: 600;
-            white-space: nowrap;
+            font-size: 14px;
+            line-height: 1.5;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .art-center-slider__arrow,
+        .art-center-slider__navigation {
+            display: none;
+        }
+
+        @media screen and (min-width: 761px) {
+            .art-center-slider.is-ready .art-center-slider__viewport {
+                overflow: hidden;
+                border: 1px solid #e4e7ec;
+                background: #ffffff;
+                box-shadow: 0 14px 36px rgba(16, 24, 40, 0.10);
+            }
+
+            .art-center-slider.is-ready .art-center-slider__track {
+                display: flex;
+                gap: 0;
+                transform: translate3d(0, 0, 0);
+                transition: transform 360ms ease;
+                cursor: grab;
+                touch-action: pan-y;
+                user-select: none;
+            }
+
+            .art-center-slider.is-ready .art-center-slider__track.is-dragging {
+                transition: none;
+                cursor: grabbing;
+            }
+
+            .art-center-slider.is-ready .art-center-slider__slide {
+                flex: 0 0 100%;
+            }
+
+            .art-center-slider.is-ready .art-center-slider__frame {
+                border-radius: 0;
+            }
+
+            .art-center-slider.is-ready .art-center-slider__caption {
+                margin: 0;
+                padding: 14px 20px;
+            }
+
+            .art-center-slider.is-ready .art-center-slider__arrow {
+                position: absolute;
+                z-index: 2;
+                top: 42%;
+                display: flex;
+                width: 46px;
+                height: 46px;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+                border: 1px solid #d0d5dd;
+                border-radius: 50%;
+                color: #223b82;
+                background: #ffffff;
+                box-shadow: 0 4px 16px rgba(16, 24, 40, 0.16);
+                font: 700 31px/1 Arial, Helvetica, sans-serif;
+                cursor: pointer;
+                transform: translateY(-50%);
+            }
+
+            .art-center-slider__arrow--previous { left: 14px; }
+            .art-center-slider__arrow--next { right: 14px; }
+
+            .art-center-slider.is-ready .art-center-slider__navigation {
+                display: block;
+                margin-top: 16px;
+            }
+
+            .art-center-slider__thumbnails {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .art-center-slider__thumbnail {
+                display: block;
+                min-width: 0;
+                width: 100%;
+                padding: 4px;
+                overflow: hidden;
+                box-sizing: border-box;
+                border: 2px solid #d0d5dd;
+                border-radius: 12px;
+                background: #ffffff;
+                cursor: pointer;
+            }
+
+            .art-center-slider__thumbnail:hover {
+                border-color: #84adff;
+            }
+
+            .art-center-slider__thumbnail[aria-current="true"] {
+                border-color: #223b82;
+                background: #eaf0ff;
+                box-shadow: 0 0 0 1px #223b82;
+            }
+
+            .art-center-slider__thumbnail-image {
+                display: block;
+                width: 100%;
+                height: auto;
+                aspect-ratio: 16 / 9;
+                object-fit: cover;
+                border-radius: 7px;
+                pointer-events: none;
+            }
+
+            .art-center-slider__counter {
+                margin: 10px 0 0;
+                color: #667085;
+                font-size: 13px;
+                font-weight: 600;
+                text-align: right;
+            }
+        }
+
+        .art-center-slider:focus-visible,
+        .art-center-slider button:focus-visible {
+            outline: 3px solid #175cd3;
+            outline-offset: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .art-center-slider.is-ready .art-center-slider__track {
+                transition: none;
+            }
+        }
+
+        @media print {
+            .art-center-slider__track {
+                display: grid !important;
+                gap: 18px;
+                transform: none !important;
+            }
+            .art-center-slider__slide { break-inside: avoid; }
         }
 
         .art-center-sidebar__block +
@@ -619,62 +643,8 @@ $shareLabels = [
 
 
         @media (max-width: 760px) {
-            .art-center-directions {
-                grid-template-columns: 1fr;
-            }
-
-            .art-center-slider {
-                margin-bottom: 36px;
-            }
-
-            .art-center-slider__viewport {
-                overflow: visible;
-                border: 0;
-                border-radius: 0;
-                background: transparent;
-                box-shadow: none;
-            }
-
-            .art-center-slider__track,
-            .art-center-slider__track.is-dragging {
-                display: grid;
-                gap: 22px;
-                transform: none !important;
-                transition: none;
-                cursor: default;
-                touch-action: auto;
-            }
-
-            .art-center-slider__slide {
-                position: static;
-                display: block;
-            }
-
-            .art-center-slider__frame {
-                overflow: hidden;
-                border: 1px solid #e4e7ec;
-                border-radius: 16px;
-                box-shadow:
-                    0 10px 28px rgba(16, 24, 40, 0.08);
-            }
-
-            .art-center-slider__caption {
-                position: static;
-                margin: 10px 0 0;
-                padding: 0 6px;
-                color: #667085;
-                background: transparent;
-                font-size: 14px;
-                font-weight: 400;
-                text-align: center;
-            }
-
-            .art-center-slider.is-ready
-            .art-center-slider__arrow,
-            .art-center-slider.is-ready
-            .art-center-slider__navigation {
-                display: none;
-            }
+            .art-center-directions { grid-template-columns: 1fr; }
+            .art-center-slider { margin-bottom: 36px; }
         }
 
         @media (max-width: 640px) {
@@ -783,8 +753,8 @@ require_once __DIR__ .
                     class="art-center-slider"
                     id="gallery"
                     aria-label="Az „ART Center” fényképei"
-                    aria-roledescription="képgaléria"
-                    tabindex="0"
+                    data-art-slider-role="képgaléria"
+                    tabindex="-1"
                     data-art-slider
                 >
 
@@ -799,6 +769,7 @@ require_once __DIR__ .
 
                                 <figure
                                     class="art-center-slider__slide"
+                                    id="art-center-slide-<?= $index + 1 ?>"
                                     data-art-slider-slide
                                     aria-label="<?= ($index + 1) . ' / ' . count($slides) ?>"
                                 >
@@ -847,17 +818,29 @@ require_once __DIR__ .
                     <div class="art-center-slider__navigation">
 
                         <div
-                            class="art-center-slider__dots"
+                            class="art-center-slider__thumbnails"
                             aria-label="Fénykép kiválasztása"
                         >
                             <?php foreach ($slides as $index => $image): ?>
                                 <button
-                                    class="art-center-slider__dot"
+                                    class="art-center-slider__thumbnail"
                                     type="button"
                                     aria-label="<?= $index + 1 ?>. fénykép megjelenítése"
                                     aria-current="<?= $index === 0 ? 'true' : 'false' ?>"
-                                    data-art-slider-dot="<?= $index ?>"
-                                ></button>
+                                    data-art-slider-thumbnail="<?= $index ?>"
+                                    aria-controls="art-center-slide-<?= $index + 1 ?>"
+                                >
+                                    <img
+                                        class="art-center-slider__thumbnail-image"
+                                        src="<?= $escape($image['src']) ?>"
+                                        alt=""
+                                        width="160"
+                                        height="90"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    >
+                                </button>
                             <?php endforeach; ?>
                         </div>
 
@@ -1116,196 +1099,130 @@ document.addEventListener('DOMContentLoaded', function () {
     const artSlider = document.querySelector('[data-art-slider]');
 
     if (artSlider) {
-        const sliderTrack =
-            artSlider.querySelector('[data-art-slider-track]');
-        const sliderSlides = Array.from(
-            artSlider.querySelectorAll('[data-art-slider-slide]')
-        );
-        const sliderDots = Array.from(
-            artSlider.querySelectorAll('[data-art-slider-dot]')
-        );
-        const previousButton =
-            artSlider.querySelector('[data-art-slider-previous]');
-        const nextButton =
-            artSlider.querySelector('[data-art-slider-next]');
-        const sliderCounter =
-            artSlider.querySelector('[data-art-slider-counter]');
-        const desktopSlider =
-            window.matchMedia('(min-width: 761px)');
+        const sliderTrack = artSlider.querySelector('[data-art-slider-track]');
+        const slides = Array.from(artSlider.querySelectorAll('[data-art-slider-slide]'));
+        const thumbnails = Array.from(artSlider.querySelectorAll('[data-art-slider-thumbnail]'));
+        const previous = artSlider.querySelector('[data-art-slider-previous]');
+        const next = artSlider.querySelector('[data-art-slider-next]');
+        const counter = artSlider.querySelector('[data-art-slider-counter]');
+        const desktop = window.matchMedia('screen and (min-width: 761px)');
+        let current = 0;
+        let pointer = null;
+        let startX = 0;
+        let distance = 0;
+        let printing = false;
 
-        let currentSlide = 0;
-        let dragStartX = 0;
-        let dragDistance = 0;
-        let isDragging = false;
+        const isDesktop = function () {
+            return desktop.matches && !printing;
+        };
 
-        const renderSlider = function () {
-            const desktopMode = desktopSlider.matches;
-
-            if (desktopMode) {
-                sliderTrack.style.transform =
-                    'translate3d(-' +
-                    (currentSlide * 100) +
-                    '%, 0, 0)';
+        const render = function () {
+            const active = isDesktop();
+            artSlider.tabIndex = active ? 0 : -1;
+            if (active) {
+                artSlider.setAttribute('aria-roledescription', artSlider.dataset.artSliderRole);
             } else {
-                sliderTrack.style.transform = '';
+                artSlider.removeAttribute('aria-roledescription');
             }
-
-            sliderSlides.forEach(function (slide, index) {
-                slide.setAttribute(
-                    'aria-hidden',
-                    desktopMode && index !== currentSlide
-                        ? 'true'
-                        : 'false'
-                );
-            });
-
-            sliderDots.forEach(function (dot, index) {
-                dot.setAttribute(
-                    'aria-current',
-                    index === currentSlide ? 'true' : 'false'
-                );
-            });
-
-            if (sliderCounter) {
-                sliderCounter.textContent =
-                    (currentSlide + 1) +
-                    ' / ' +
-                    sliderSlides.length;
-            }
-        };
-
-        const showSlide = function (index) {
-            if (!desktopSlider.matches || sliderSlides.length < 2) {
-                return;
-            }
-
-            currentSlide =
-                (index + sliderSlides.length) %
-                sliderSlides.length;
-
-            sliderTrack.style.transition = '';
-            renderSlider();
-        };
-
-        if (sliderSlides.length > 1) {
-            artSlider.classList.add('is-ready');
-
-            previousButton.addEventListener('click', function () {
-                showSlide(currentSlide - 1);
-            });
-
-            nextButton.addEventListener('click', function () {
-                showSlide(currentSlide + 1);
-            });
-
-            sliderDots.forEach(function (dot) {
-                dot.addEventListener('click', function () {
-                    showSlide(Number(dot.dataset.artSliderDot));
-                });
-            });
-
-            artSlider.addEventListener('keydown', function (event) {
-                if (!desktopSlider.matches) {
-                    return;
-                }
-
-                if (event.key === 'ArrowLeft') {
-                    event.preventDefault();
-                    showSlide(currentSlide - 1);
-                }
-
-                if (event.key === 'ArrowRight') {
-                    event.preventDefault();
-                    showSlide(currentSlide + 1);
-                }
-            });
-
-            sliderTrack.addEventListener('pointerdown', function (event) {
-                if (
-                    !desktopSlider.matches ||
-                    event.button !== 0
-                ) {
-                    return;
-                }
-
-                isDragging = true;
-                dragStartX = event.clientX;
-                dragDistance = 0;
-                sliderTrack.classList.add('is-dragging');
-                sliderTrack.setPointerCapture(event.pointerId);
-            });
-
-            sliderTrack.addEventListener('pointermove', function (event) {
-                if (!isDragging || !desktopSlider.matches) {
-                    return;
-                }
-
-                dragDistance = event.clientX - dragStartX;
-
-                sliderTrack.style.transform =
-                    'translate3d(calc(-' +
-                    (currentSlide * 100) +
-                    '% + ' +
-                    dragDistance +
-                    'px), 0, 0)';
-            });
-
-            const finishDragging = function (event) {
-                if (!isDragging) {
-                    return;
-                }
-
-                isDragging = false;
-                sliderTrack.classList.remove('is-dragging');
-
-                if (
-                    sliderTrack.hasPointerCapture &&
-                    sliderTrack.hasPointerCapture(event.pointerId)
-                ) {
-                    sliderTrack.releasePointerCapture(event.pointerId);
-                }
-
-                const threshold = Math.min(
-                    90,
-                    sliderTrack.clientWidth * 0.14
-                );
-
-                if (dragDistance <= -threshold) {
-                    showSlide(currentSlide + 1);
-                } else if (dragDistance >= threshold) {
-                    showSlide(currentSlide - 1);
+            sliderTrack.style.transform = active
+                ? 'translate3d(-' + (current * 100) + '%, 0, 0)'
+                : '';
+            slides.forEach(function (slide, index) {
+                if (active && index !== current) {
+                    slide.setAttribute('aria-hidden', 'true');
                 } else {
-                    sliderTrack.style.transition = '';
-                    renderSlider();
+                    slide.removeAttribute('aria-hidden');
                 }
-
-                dragDistance = 0;
-            };
-
-            sliderTrack.addEventListener(
-                'pointerup',
-                finishDragging
-            );
-            sliderTrack.addEventListener(
-                'pointercancel',
-                finishDragging
-            );
-
-            sliderTrack.addEventListener('dragstart', function (event) {
-                event.preventDefault();
             });
-        }
+            thumbnails.forEach(function (button, index) {
+                button.setAttribute('aria-current', index === current ? 'true' : 'false');
+            });
+            counter.textContent = (current + 1) + ' / ' + slides.length;
+        };
 
-        if (desktopSlider.addEventListener) {
-            desktopSlider.addEventListener(
-                'change',
-                renderSlider
-            );
+        const cancelDrag = function () {
+            const captured = pointer;
+            pointer = null;
+            distance = 0;
+            sliderTrack.classList.remove('is-dragging');
+            if (captured !== null && sliderTrack.hasPointerCapture(captured)) {
+                sliderTrack.releasePointerCapture(captured);
+            }
+        };
+
+        const show = function (index) {
+            if (!isDesktop() || !slides.length) return;
+            cancelDrag();
+            current = ((index % slides.length) + slides.length) % slides.length;
+            render();
+        };
+
+        previous.addEventListener('click', function () { show(current - 1); });
+        next.addEventListener('click', function () { show(current + 1); });
+        thumbnails.forEach(function (button) {
+            button.addEventListener('click', function () {
+                show(Number(button.dataset.artSliderThumbnail));
+            });
+        });
+        artSlider.addEventListener('keydown', function (event) {
+            if (!isDesktop() || event.altKey || event.ctrlKey || event.metaKey) return;
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                event.preventDefault();
+                show(current + (event.key === 'ArrowLeft' ? -1 : 1));
+            }
+        });
+
+        sliderTrack.addEventListener('pointerdown', function (event) {
+            if (!isDesktop() || event.button !== 0 || !event.isPrimary || pointer !== null) return;
+            pointer = event.pointerId;
+            startX = event.clientX;
+            distance = 0;
+            sliderTrack.classList.add('is-dragging');
+            sliderTrack.setPointerCapture(pointer);
+        });
+        sliderTrack.addEventListener('pointermove', function (event) {
+            if (pointer !== event.pointerId || !isDesktop()) return;
+            distance = event.clientX - startX;
+            sliderTrack.style.transform =
+                'translate3d(calc(-' + (current * 100) + '% + ' + distance + 'px), 0, 0)';
+        });
+        sliderTrack.addEventListener('pointerup', function (event) {
+            if (pointer !== event.pointerId) return;
+            const delta = event.clientX - startX;
+            const threshold = Math.min(90, sliderTrack.clientWidth * 0.14);
+            const step = Math.abs(delta) >= threshold ? (delta < 0 ? 1 : -1) : 0;
+            cancelDrag();
+            show(current + step);
+        });
+        ['pointercancel', 'lostpointercapture'].forEach(function (name) {
+            sliderTrack.addEventListener(name, function (event) {
+                if (pointer !== event.pointerId) return;
+                cancelDrag();
+                render();
+            });
+        });
+        sliderTrack.addEventListener('dragstart', function (event) {
+            if (isDesktop()) event.preventDefault();
+        });
+        const changeMode = function () {
+            cancelDrag();
+            render();
+        };
+        if (desktop.addEventListener) {
+            desktop.addEventListener('change', changeMode);
         } else {
-            desktopSlider.addListener(renderSlider);
+            desktop.addListener(changeMode);
         }
-
-        renderSlider();
+        window.addEventListener('beforeprint', function () {
+            printing = true;
+            changeMode();
+        });
+        window.addEventListener('afterprint', function () {
+            printing = false;
+            changeMode();
+        });
+        render();
+        if (slides.length > 1) artSlider.classList.add('is-ready');
     }
 
     const panel = document.querySelector('.art-center-share-panel');
