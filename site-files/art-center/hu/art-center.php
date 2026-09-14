@@ -45,7 +45,7 @@ $officialPageUrl =
 
 $mainImage = [
     'src' =>
-        '/new-home/img/9fd8de_9-maya-rossijskij-kulturnyj-czentr-v-budapeshte-predstavil-meropritiya-v-oznamenovenii-80-j-godovshhine-pobedy-v-velikoj-otechestvennoj-vojne.-foto-3.jpg',
+        '/new-home/img/art-center-stage-performance-budapest.jpg',
     'alt' =>
         'Az „ART Center” résztvevői mozgásszínházi kompozíciót adnak elő a Budapesti Orosz Kulturális Központ színpadán',
     'caption' =>
@@ -57,7 +57,7 @@ $mainImage = [
 $galleryImages = [
     [
         'src' =>
-            '/new-home/img/Screenshot_20260911_134502_edit_334295669352787.jpg',
+            '/new-home/img/art-center-modern-dance-rehearsal.jpg',
         'alt' =>
             'Az „ART Center” résztvevői modern koreográfiai gyakorlatokat végeznek',
         'caption' =>
@@ -67,7 +67,7 @@ $galleryImages = [
     ],
     [
         'src' =>
-            '/new-home/img/Screenshot_20260911_134131_edit_334315567264394.jpg',
+            '/new-home/img/art-center-musical-theatre-performance.jpg',
         'alt' =>
             'Az „ART Center” táncelőadása színes színpadi textilekkel',
         'caption' =>
@@ -77,7 +77,7 @@ $galleryImages = [
     ],
     [
         'src' =>
-            '/new-home/img/Screenshot_20260911_135112.jpg',
+            '/new-home/img/art-center-ensemble-stage-performance.jpg',
         'alt' =>
             'Az „ART Center” együttese színpadi előadás közben',
         'caption' =>
